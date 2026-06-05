@@ -15,6 +15,7 @@
 package sqlparser
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -54,4 +55,29 @@ func TestMixer(t *testing.T) {
 
 	sql = "show proxy abc"
 	testParse(t, sql)
+}
+
+func TestDefaultValueExpressionParsing(t *testing.T) {
+	cases := []string{
+		"insert into t (a, b) values (default, ?)",
+		"update t set col = default where id = 1",
+		"set names default",
+	}
+
+	for _, sql := range cases {
+		testParse(t, sql)
+	}
+}
+
+func TestInsertDefaultRoundTrip(t *testing.T) {
+	sql := "insert into t (a, b) values (default, ?)"
+	stmt, err := Parse(sql)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	normalized := String(stmt)
+	if !strings.Contains(strings.ToLower(normalized), "default") {
+		t.Fatalf("expected formatted SQL to contain default, got %s", normalized)
+	}
 }

@@ -468,6 +468,7 @@ func (StrVal) IExpr()          {}
 func (NumVal) IExpr()          {}
 func (ValArg) IExpr()          {}
 func (*NullVal) IExpr()        {}
+func (*DefaultVal) IExpr()     {}
 func (*ColName) IExpr()        {}
 func (ValTuple) IExpr()        {}
 func (*Subquery) IExpr()       {}
@@ -604,6 +605,7 @@ func (StrVal) IValExpr()      {}
 func (NumVal) IValExpr()      {}
 func (ValArg) IValExpr()      {}
 func (*NullVal) IValExpr()    {}
+func (*DefaultVal) IValExpr() {}
 func (*ColName) IValExpr()    {}
 func (ValTuple) IValExpr()    {}
 func (*Subquery) IValExpr()   {}
@@ -639,6 +641,13 @@ type NullVal struct{}
 
 func (node *NullVal) Format(buf *TrackedBuffer) {
 	buf.Fprintf("null")
+}
+
+// DefaultVal represents a DEFAULT value.
+type DefaultVal struct{}
+
+func (node *DefaultVal) Format(buf *TrackedBuffer) {
+	buf.Fprintf("default")
 }
 
 // ColName represents a column name.

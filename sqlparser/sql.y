@@ -280,10 +280,6 @@ set_statement:
   {
     $$ = &Set{Comments: Comments($2), Exprs: $3}
   }
-| SET comment_opt NAMES DEFAULT
-   {
-     $$ = &Set{Comments: Comments($2), Exprs: UpdateExprs{&UpdateExpr{Name: &ColName{Name:[]byte("names")}, Expr: StrVal("default")}}}
-   }
 | SET comment_opt NAMES value_expression 
   {
     $$ = &Set{Comments: Comments($2), Exprs: UpdateExprs{&UpdateExpr{Name: &ColName{Name:[]byte("names")}, Expr: $4}}}
@@ -947,6 +943,10 @@ value:
 | NULL
   {
     $$ = &NullVal{}
+  }
+| DEFAULT
+  {
+    $$ = &DefaultVal{}
   }
 
 group_by_opt:
